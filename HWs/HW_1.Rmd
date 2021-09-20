@@ -1,0 +1,116 @@
+---
+title: ""
+author: "MGinorio"
+date: "8/27/2021"
+output: 
+  html_document: default
+  pdf_document: default
+---
+## HW_1
+
+One of the most useful applications for linear algebra in data science is image manipulation.  We often need to compress, expand, warp, skew, etc. images.  To do so, we left multiply a transformation matrix by each of the point vectors.  
+
+For this assignment, build the first letters for both your first and last name using point plots in R.  For example, the following code builds an H.
+
+## Practice {.tabset .tabset-pills}
+### Example
+
+```{r}
+x=c(rep(0,500),seq(0,1,length.out=1000), rep(1,500))
+
+y=c(seq(-1,1,length.out=500),rep(0,1000), seq(-1,1,length.out=500))
+
+z=rbind(x,y)
+
+plot(y~x, xlim=c(-3,3), ylim=c(-3,3))
+```
+
+### Task
+
+
+write R code that will left multiply (%>%) a square matrix (x) against each of the vectors of points (y). Initially, that square matrix will be the Identity matrix.  
+
+Use a loop that changes the transformation matrix incrementally to demonstrate 1) shear, 2) scaling, 3)  rotation , and 4) projection in animated fashion.  
+
+Hint:  Use x11() to open a new plotting window in R.
+
+Upload your document as a .RMD file.  I will know if your assignment is correct if the animation runs. correctly
+
+
+```{r}
+x=c(rep(-1,500), seq(-1,0,length.out=1000), seq(-1,0,length.out=1000),
+    rep(0,500), seq(0.25,.75,length.out=500), rep(.25,1000), seq(.75,1.25,length.out=500))
+
+y=c(seq(-1,1,length.out=500), rep(0,1000), rep(1,1000), seq(-1,1,length.out=500), 
+    rep(1,500), seq(-1,1,length.out=1000), rep(1,500))
+
+z=rbind(x,y)
+
+# plot for Initial letters
+
+plot(y~x, xlim=c(-3,3), ylim=c(-3,3))
+```
+
+```{r}
+# create an Identity Matrix
+# basic R - use diag prompt to create identity matrix
+
+id_matrix <- diag(2)
+
+# create transformation matrix
+# slant letter to the right by multiplying by an x-shear Matrix A
+# A = [1  0.2]
+#     [0   1 ]
+
+# 1) Shear
+
+Matrix_A <- matrix(c(1,0,0.2,1), nrow = 2, ncol = 2)
+
+# 2) Scaling
+
+# Make slanted matrix Narrower
+# Apply x-scale Matrix B
+# B = [0.8   0]
+#     [0     1]
+
+Matrix_B <- matrix(c(0.8,0,0,10), nrow = 2, ncol = 2)
+
+
+# 3) Rotation
+
+# Rotate by 30 degrees
+# Apply Rotation Matrix
+# R = [0.866  -0.5]
+#     [0.5   0.866]
+
+Matrix_R <- matrix(c(0.866,0.5,-0.5,0.866),nrow = 2, ncol = 2)
+
+# 4) Projection
+
+Matrix_P <- matrix(c(0,1,0,1), nrow = 2, ncol = 2)
+
+# COmbine all matrices to be able to see animation
+# use of lists
+# Transform_list
+
+Trans_list <- list(id_matrix, Matrix_A, Matrix_B, Matrix_R, Matrix_P)
+
+# hint
+# use x11()
+
+x11(title = "HW1_Animation")
+
+# Create loop
+
+for (idx in 1:5) {
+  z <- Trans_list[[idx]] %*% z
+  plot(z[2,]~z[1,], xlim = c(-10,10), ylim=c(-10,10))
+  
+}
+
+# use tydiverse more modern version
+```
+
+
+
+

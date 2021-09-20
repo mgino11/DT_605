@@ -1,0 +1,56 @@
+---
+title: "LINEAR ALGEBRA / The Derminant"
+author: "MGinorio"
+date: "9/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Find Det Using Row Ops
+
+### Steps
+
+1) If a multiple of Row A is added to another row to make Matrix B:
+
+```{Det_row_ops}
+# det_A = det_B
+# R2= 3R3 +R2
+```
+
+2) if B is formed by interchanging rows of A:
+```{r}
+# det_A = -det_B
+# R1 <--> R2
+```
+
+3) If Matrix B is formed by multiplying a row in Matrix A by a number K:
+
+```{r}
+# det_A = 1/k * det_B
+```
+
+###
+```{r, warning=FALSE}
+library(pracma)
+
+Y = matrix(c(-5,0,0,2,-2,0,3,5,0), nrow = 3, ncol = 3)
+Y
+
+```
+
+```{r}
+rref(Y)
+```
+
+```{r}
+Z = matrix(c(1,1,1,1,1,1,1,1,1), nrow = 3, ncol = 3)
+Z
+```
+
+```{r}
+rref(Z)
+```
+

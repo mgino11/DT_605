@@ -1,0 +1,66 @@
+---
+title: "Ginorio_Assignment_5"
+author: "MGinorio"
+date: "9/26/2021"
+output: pdf_document
+---
+
+ Problem 2
+
+(Binomial). The probability of your organization receiving a Joint Commission inspection in any given month is .05. What is the probability that, after 24 months, you received exactly 2 inspections? What is the probability that, after 24 months, you received 2 or more inspections? What is the probability that your received fewer than 2 inspections? What is the expected number of inspections you should have received? What is the standard deviation?
+
+### Solution
+
+$$
+(Px) = {n \choose x} \times p^2 \times (1-p)^{n-x}
+$$
+X = 2, p = .05, n = 24
+
+$$
+(Px=2) = {24 \choose 2} \times .05^2 \times (.95)^{22}
+$$
+
+```{r}
+two_insp <- choose(24, 2) * .05^2 * .95^22
+```
+
+Exactly two inspections `r two_insp` (or `r two_insp * 100`%).
+
+```{r}
+# For exactly 2
+dbinom(2, size=24, prob=0.05) 
+```
+
+Confirming above with an R function
+
+```{r}
+less_than_two <- pbinom(1, size=24, prob=0.05) 
+two_or_more <- 1 - less_than_two
+```
+
+Two or more inspections `r two_or_more` (or `r two_or_more * 100`%) and less than two inspections `r less_than_two` (or `r less_than_two * 100`%).
+
+```{r}
+n <- 24
+prob <- .05
+x <- 0:24
+p <- dbinom(x,n,prob)
+(p * 100)
+```
+
+The result with the highest probability (or likelihood) is 1.
+
+```{r}
+# Compute mean
+mu <- sum(x*p)
+# Compute variance
+sigma.sq=sum(x^2*p)-mu^2
+# Compute standarad deviation
+sigma=sqrt(sigma.sq)
+```
+
+Mean (or expected value) is `r mu`.
+
+Variance is `r sigma.sq`.
+
+Standard deviation is `r sigma`.

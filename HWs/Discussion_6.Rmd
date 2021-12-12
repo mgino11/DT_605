@@ -1,0 +1,53 @@
+---
+title: "Problem 18, Page 90"
+author: "MGinorio"
+date: "9/30/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+```{r}
+set.seed(1)
+n <- 55
+match <- 0
+
+# Simulate 10000 rooms and check for matches in each room
+for(i in 1:10000){
+  birthdays <- sample(365, n, replace = TRUE)
+  if(length(unique(birthdays)) < n){
+    match <- match + 1
+  } 
+}
+
+# Calculate the estimated probability of a match and print it
+p_match <- match / 10000
+print(p_match)
+
+```
+
+Pbirthday Function
+
+```{r}
+pbirthday(25)
+pbirthday(35)
+pbirthday(45)
+pbirthday(55)
+
+```
+
+Match Probabilities 
+
+```{r}
+n_size <- c(1:55)
+match_p <- sapply(n_size, pbirthday)
+print(match_p)
+
+```
+
+```{r}
+plot(match_p ~ n_size)
+```
+
+

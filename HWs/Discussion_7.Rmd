@@ -1,0 +1,43 @@
+---
+title: "Discussion_7"
+author: "MGinorio"
+date: "10/8/2021"
+output: pdf_document
+---
+
+## 5.1 - 6
+
+Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi’s. Find the distribution of Y .
+
+Y = min(X1, X2,…Xn)
+
+sample:
+
+```{r}
+k = 10
+
+sample(k)
+```
+
+```{r}
+sample <- runif(k, min = 1, max = k)
+summary(sample)
+```
+
+```{r}
+sample_dist <- punif(k, min = 1, max = k)
+
+sample_dist
+```
+
+```{r}
+plot(sample, type = "h")
+```
+```{r}
+y <- min(sample)
+
+y_dist <- punif(y, min = 1, max = k)
+
+plot(y, type = "h")
+```
+

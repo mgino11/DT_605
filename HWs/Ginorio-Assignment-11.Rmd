@@ -1,0 +1,275 @@
+---
+title: "assmt11"
+author: "MGinorio"
+date: "11/7/2021"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Regression Analysis
+
+Using the "cars" dataset in R, build a linear model for stopping distance
+as a function of speed and replicate the analysis of your textbook chapter 3 (visualization, quality evaluation of the model, and residual analysis.)
+
+```{r packages, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(moderndive)
+library(skimr)
+
+```
+
+Let’s consider a simple example of how the speed of a car affects its stopping distance, that is, how far it travels before it comes to a stop. To examine this relationship, we will use the 'cars' dataset.
+
+```{r}
+
+cars_regression <- cars %>% 
+  select(speed, dist)
+
+cars_regression %>% skim()
+  
+
+```
+
+### Question
+
+How the speed of a car affects its stopping distance, that is, how far it travels before it comes to a stop?
+
+### EDA
+
+***
+
+
+
+#### Variables
+
+Exploratory analysis of variables 
+
+$y:$ Dependent Variable - $dist$ 
+
+$\vec{x}$ Independent Variable - $speed$
+
+
+Investigate correlation between this variables
+
+* distance
+* speed
+
+```{r eda vars, echo=FALSE}
+
+#### distance
+
+pl1 <- ggplot(cars_regression, aes(x = dist)) +
+  geom_histogram(binwidth = 30) +
+  labs(x = "distance", y = "count") +
+  ggtitle("Distance Distribution") +
+  theme(legend.position = "none")
+
+
+#### speed
+
+pl2 <- ggplot(cars_regression, aes(x = speed)) +
+  geom_histogram(binwidth = 5) +
+  labs(x = "speed", y = "count") +
+  ggtitle("Speed Distribution") +
+  theme(legend.position = "none")
+
+
+library(patchwork)
+
+pl1 + pl2 + plot_layout(ncol = 2)
+
+```
+
+#### Visualize Data
+
+Initial scatterplot of the stopping distance as a function of speed indicates the stopping distance tends to increase as the speed increases, as is expected. 
+
+The plot does show the relationship is likely linear.
+
+
+```{r vis data, echo=FALSE}
+
+pl4 <- ggplot(data = cars_regression, aes(x = speed, y = dist)) + 
+  geom_point() +
+  labs(x = "Speed (in miles per hour)", y = "Stopping Distance (in feet)",
+       title = "Stopping Distance as a function of speed") + 
+    geom_smooth(method = "lm", se = F)
+
+pl4
+```
+
+#### Create Model
+
+The output of the model indicates a linear function as:
+
+$$
+stopping\ distance = -17.579 + (3.932 * speed)
+$$
+
+A y-intercept of -17.579 does seem peculiar. 
+
+Based on the linear model, this would indicate that a car at speeds 0 or closer to 0 (negative) it would stop in less than 0 feet, which is accurate since a car that is not in movement thus it does not need to stop. 
+
+The slope of 3.932 based on the speed.
+
+
+
+```{r cars model, echo=FALSE}
+
+library(knitr)
+
+#cars_model ~ speed
+
+speed_model <- lm(dist ~ speed, data = cars_regression)
+
+get_regression_table(speed_model, conf.level = 0.99) %>% 
+  kable()
+
+```
+
+**Coefficient**
+
+also seen under estimate - This portion of the output shows the estimated coefficient values
+
+**Std. Error**
+
+For a good model, we typically would like to see a standard
+error that is at least five to ten times smaller than the corresponding coefficient
+
+For Example:
+
+the SD error for $speed$ is 9.45 times smaller then the coefficient value.(3.932/0.416)
+
+**P-value**
+
+shows the probability that the corresponding coefficient is not relevant in the model. This value is also known as the significance or p-value of the coefficient
+
+The probability that the intercept is not relevant is 0.012.
+
+
+```{r speed model points, echo=FALSE}
+
+speed_model_points <- get_regression_points(speed_model) 
+
+speed_model_points
+
+```
+
+**Residuals**
+
+The residuals are the differences between the actual measured values and
+the corresponding values on the fitted regression line.
+
+Residual values are normally distributed around
+a mean of zero in this case we see that even though the values are not exactly zero we can still expect a normal distribution.
+
+That is, a good model’s residuals should be roughly balanced around and not
+too far away from the mean of zero.
+
+**RSquared & Residual Standard Error RSE**
+
+These final few lines in the output provide some statistical information
+about the quality of the regression model’s fit to the data
+
+```{r}
+summary(speed_model)$r.squared
+
+summary(speed_model)$sigma
+```
+
+
+**Minimum Maximum** 
+
+minimum and maximum values of roughly the
+same magnitude, and first and third quartile values of roughly the same
+magnitude.
+
+```{r}
+summary(speed_model_points$residual)
+```
+
+
+**Residual Visual Relationship**
+
+Distribution of Residuals 
+Investigate potential relationships between the residuals and all explanatory/predictor variables
+
+**Residual Vs Fitter**
+
+we may be able to construct a model that produces tighter residual
+values and better predictions.
+
+Residual values greater than zero mean that the regression model predicted a value that was too small compared to the actual measured value, and negative values indicate that the regression model predicted a value that was too large
+
+
+**QQ Plot**
+
+If the residuals were normally distributed, we would expect the points
+plotted in this figure to follow a straight line. Which in this case we do see a straight line forming.
+
+This test could confirm that the speed as a predictor in the model may be sufficient to explain the data.
+
+
+```{r residuals, echo=FALSE}
+
+# Code to visualize distribution of residuals:
+
+pl5 <- ggplot(speed_model_points, aes(x = residual)) +
+  geom_histogram(bins = 20) +
+  labs(x = "speed Residual", y = "Count")
+
+# Code to visualize partial residual plot over speed:
+
+pl6 <- ggplot(speed_model_points, aes(x = speed, y = residual)) +
+  geom_point() +
+  labs(x = "speed", y = "Residual")
+
+
+# Code to visualize partial residual plot over dist:
+
+pl7 <- ggplot(speed_model_points, aes(x = dist, y = residual)) +
+  geom_point() +
+  labs(x = "Distance", y = "Residual")
+
+
+library(patchwork)
+
+pl6 + pl5 + pl7 + plot_layout(ncol = 2)
+
+```
+
+```{r}
+plot(speed_model)
+plot(speed_model_points)
+
+```
+
+
+### Predictions
+
+We do this so that we can specify that 8 is a value of speed, so that predict knows how to use it with the model stored in speed_model
+
+```{r}
+predict(speed_model, newdata = data.frame(speed = c(8, 21, 50)))
+```
+
+$stopping\ distance = -17.579 + (3.932 * speed)$
+
+$stopping\ distance = -17.579 + (3.932 * 8)$
+
+$stopping\ distance = -17.579 + (3.932 * 21)$
+
+$stopping\ distance = -17.579 + (3.932 * 50)$ ** note 50 is out of range
+
+### Conclusion
+
+Overall, the car speed would appear to be a good predictor of stopping distance. The linear regression model does contain some flaws, particularly in the intercept value and the predictions at higher speeds
+

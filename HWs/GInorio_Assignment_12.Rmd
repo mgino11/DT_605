@@ -1,0 +1,147 @@
+---
+title: "HW_12"
+author: "MGinorio"
+date: "11/14/2021"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### TO DO
+
+The attached who.csv dataset contains real-world data from 2008. The variables included follow.
+
+- Country: name of the country
+- LifeExp: average life expectancy for the country in years
+- InfantSurvival: proportion of those surviving to one year or more
+- Under5Survival: proportion of those surviving to five years or more
+- TBFree: proportion of the population without TB.
+- PropMD: proportion of the population who are MDs
+- PropRN: proportion of the population who are RNs
+- PersExp: mean personal expenditures on healthcare in US dollars at average exchange rate
+- GovtExp: mean government expenditures per capita on healthcare, US dollars at average exchange rate
+- TotExp: sum of personal and government expenditures.
+
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+
+```
+
+```{r}
+
+library(readr)
+who <- read_csv("C:/Users/maria/Downloads/who.csv")
+View(who)
+summary(who)
+```
+
+### Part 1
+
+Provide a scatterplot of LifeExp~TotExp, and run simple linear regression. Do not transform the variables. Provide and interpret the F statistics, R^2, standard error,and p-values only. Discuss whether the assumptions of simple linear regression met.
+
+```{r}
+who %>%
+  ggplot(aes(x=TotExp, y=LifeExp)) + 
+  geom_point() + 
+  labs(title = 'Life Expectancy by Total Expenditures') + geom_smooth(method='lm', formula= y~x)
+```
+
+```{r}
+# Simple linear regression
+simple_lm <- lm(LifeExp ~ TotExp, data=who)
+summary(simple_lm)
+```
+
+* F statistic: Not useful given this is a single parameter model
+
+* R^2: Multiple R-squared is 0.2577, indicating the model explains 25.77% of the data's variation. We need at least 50% to consider this model a good fit for the data.
+* Adjusted R-squared not important because of the single variable regression model.
+* Standard error: Using the t-values to interpret the standard errors, the standard error for the intercept is quite small indicating little variability in the intercept value.
+The t-value for Total Expenditure is over 8, which according to the textbook is good. however, we need more information to determine if these values are misleading.
+* p-values: Both p-values are quite small, indicating the probability of the coefficients as not relevant to the model. 
+
+As mentioned in Standard Error, according to the textbook, these values represent a good model, yet the model plots and R-squared value indicate otherwise.
+
+## Part 2
+
+Raise life expectancy to the 4.6 power (i.e., LifeExp^4.6). Raise total expenditures to the 0.06 power (nearly a log transform, TotExp^.06). Plot LifeExp^4.6 as a function of TotExp^.06, and re-run the simple regression model using the transformed variables. Provide and interpret the F statistics, R^2, standard error, and p-values. Which model is "better?"
+
+```{r}
+
+# variables transformed
+
+who$LifeExp.T <- who$LifeExp^4.6
+who$TotExp.T <- who$TotExp^.06
+who %>%
+  ggplot(aes(x=TotExp.T, y=LifeExp.T)) + 
+  geom_point() + 
+  labs(title = 'Life Expectancy by Total Expenditures (Transformed)') + geom_smooth(method='lm', formula= y~x)
+
+# simple model of variables transformed 
+
+simple_t_lm <- lm(LifeExp.T ~ TotExp.T, data=who)
+summary(simple_t_lm)
+```
+* F statistic: not useful given this is a single parameter model
+* R^2: Multiple R-squared is 0.7298, indicating the model explains 72.98% of the data's variation. We could say this is quite an improvement compared to the first model. 
+* Adjusted R-squared not important because of the single variable regression model.
+* Standard error: Using the t-values to interpret the standard errors, the standard error for the intercept shows a ratio greater than 15 when comparing the standard error the coefficient, indicating little variability in the intercept value. 
+
+The t-value for Total Expenditure is over 22, which according to the textbook is good. Both standard error values as compared to the coefficient values are indicative of a good model because both denote little variability in the coefficient values.
+
+* p-values: The p-value for the intercept and Total Expenditure coefficients are very small which means the chance the coefficient value is not relevant to the model is very, very infrequent. For both values, good sign the model is valid for the dataset.
+
+The model with transformed values (second model) is better. Scatterplot above and Residuals vs Fitted plot below confirm this assessment. 
+
+```{r}
+plot(simple_t_lm)
+```
+
+### Part 3
+
+Using the results from 3, forecast life expectancy when TotExp^.06 =1.5. Then forecast life expectancy when TotExp^.06=2.5.
+
+```{r}
+
+result_3.1 <- simple_t_lm$coefficients[[1]] + (1.5 * simple_t_lm$coefficients[[2]])
+result_3.1 <- result_3.1^(1/4.6)
+  
+result_3.1
+```
+
+### Part 4
+
+Build the following multiple regression model and interpret the F Statistics, R^2, standard error, and p-values. How good is the model?
+
+LifeExp = b0 + (b1 x PropMd) + (b2 x TotExp) + b3 x PropMD x TotExp
+
+```{r}
+
+mult_lm <- lm(LifeExp ~ PropMD + TotExp + (PropMD * TotExp), data=who)
+summary(mult_lm)
+```
+
+* F statistic: The model results in a value of 34.49 on 3 and 186 degrees of freedom. According to the textbook, "the F-test compares the current model to a model with one fewer predictor. If the current model is better than the reduced model, the p-value will be small." Given the p-value is quite small, this model would be better than a reduced model.
+
+* R^2: The multiple R-squared value is 0.3574, and the adjusted R-squared is 0.3471. In assessing the model, these two values are not indicative of a good model. These results show the model accounts for only 35% of the variation in the data. 
+
+As points of comparison to the first two models, this multiple regression model performs better than the first simple linear regression model, but much worse than the transformed simple linear regression model.
+
+* p-values: The p-values for all 4 coefficients are quite small, typically a sign of a good model.
+
+### Part 5
+
+Forecast LifeExp when PropMD=.03 and TotExp = 14. Does this forecast seem realistic? Why or why not?
+
+
+```{r}
+## Pending 
+
+```
+

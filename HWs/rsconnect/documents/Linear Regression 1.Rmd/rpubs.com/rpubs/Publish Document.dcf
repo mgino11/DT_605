@@ -1,0 +1,11 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/831528/5ff1c07b1d564b60abcbcb445e497487
+bundleId: https://api.rpubs.com/api/v1/document/831528/5ff1c07b1d564b60abcbcb445e497487
+url: http://rpubs.com/mgino11/831528
+when: 1636140481.9084
+lastSyncTime: 1636140481.9084

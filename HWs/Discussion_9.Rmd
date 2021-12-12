@@ -1,0 +1,106 @@
+---
+title: "Discussion_9"
+author: "MGinorio"
+date: "10/23/2021"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1 Let S100 be the number of heads that turn up in 100 tosses of a fair coin. Use
+the Central Limit Theorem to estimate
+
+
+
+### a)
+$$
+P(S_{100}\leq 45)
+$$
+
+```{r}
+n <- 100
+p <- 0.5
+var <- 25
+sd <- sqrt(var)
+mu <- n*p
+
+a.result <- (45.5- 50)/5
+```
+
+$$
+NA(- \infty, -.09)
+$$
+The probability that number of heads that turn up in 100 tosses of a fair coin is less than 45 is = 0.1840601
+```{r}
+p_a_result <- pnorm(a.result)
+p_a_result
+```
+### b) 
+
+$$
+P(45 \leq S_{100}\leq 55)
+$$
+$$
+P(45 \leq S_{100}\leq 55) = P(\frac{44.5 - 50}{5}\leq S^*_{n} \leq \frac{55.5 - 50}{5} )
+$$
+$$
+NA(-1.1 , 1.1)
+$$
+
+The probability that number of heads that turn up in 100 tosses of a fair coin is bwt 45-55 is = 0.7308344
+```{r}
+b_result <- pnorm(1.1) - pnorm(-1.11)
+b_result
+```
+
+### c)
+$$
+P(S_{100}\geq 63)
+$$
+**Binomial change sign**
+$$
+P(S_{100}\geq 63) = 1 - P(S_{100}\leq 63 )
+$$
+
+$$
+ 1 - P(S^*_{n}\leq \frac{13.5}{5})
+$$
+```{r}
+c.result <- 13.5/5
+c.result
+```
+
+$$
+1- NA(- \infty, 2.7)
+$$
+```{r}
+1 - pnorm(c.result)
+```
+
+### d)
+
+$$
+P(S_{100}\leq 57)
+$$
+
+$$
+ P(S^*_{n}\leq \frac{7.5}{5})
+$$
+```{r}
+d.result <- 7.5 / 5
+d.result
+```
+
+$$
+NA(- \infty, 1.5)
+$$
+
+```{r}
+pnorm(1.5)
+```
+

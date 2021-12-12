@@ -1,0 +1,214 @@
+---
+title: "Linear Regression"
+author: "MGinorio"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+## Credit Card Balance Data
+
+## {.tabset .tabset-pills}
+
+### Overview 
+
+ **Credit Dataset**
+
+**A simulated data set containing information on ten thousand customers. The aim here is to predict which customers will default on their credit card debt**
+
+**Format**
+
+* A data frame with 10000 observations on the following 4 variables.
+* ID Identification
+* Income Income in $1,000’s
+* Limit Credit limit
+* Rating Credit rating
+* Cards Number of credit cards
+* Age Age in years
+* Education Number of years of education
+* Gender A factor with levels Male and Female
+* Student A factor with levels No and Yes indicating whether the individual was a student
+* Married A factor with levels No and Yes indicating whether the individual was married
+* Ethnicity A factor with levels African American, Asian, and Caucasian indicating the individual’s ethnicity
+* Balance Average credit card balance in $.
+
+
+### Packages
+
+```{r load-packages, message=FALSE, warning=FALSE}
+
+#Packages used
+
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(ISLR)
+
+```
+
+### Dataset 
+#### {.tabset}
+##### Credit
+
+Two Numerical Explanatory Variables
+
+```{r}
+
+library(ISLR)
+
+credit_dis10 <- Credit %>% as_tibble() %>% 
+  select(ID, debt = Balance, credit_limit = Limit,
+         income = Income, credit_rating = Rating, age = Age)
+
+glimpse(credit_dis10)
+```
+
+Take a sample n= 10
+
+```{r}
+credit_dis10 %>% sample_n(size = 10)
+```
+
+#### {-}
+
+### Statistics
+
+
+
+```{r statistics ,message=FALSE}
+
+credit_dis10 %>% select(debt, credit_limit, income) %>% skim()
+
+```
+
+**Note**
+
+**Debt**
+
+Debt Mean = $520.00 USD
+
+Debt Median = $460.00 USD
+
+25% Card Holders have debt = $68.75$ or less
+
+**credit_limit**
+
+Mean = $4736.00
+
+Median = $4622.50
+
+75% card holders had incomes of $57,470$ or less
+
+outcome variable = debt
+explanatory variables = credit_limit + income 
+
+**Visual Relationship**
+
+**debt ~ credit **
+
+```{r}
+ggplot(data = credit_dis10, mapping = aes(x = debt, y = credit_limit)) + 
+  geom_point() +
+  labs(x = "Credit limit (in $)", y = "Credit Card debt (in $)",
+       title = "Debt and Credit Limit") + 
+    geom_smooth(method = "lm", se = F)
+```
+
+**debt ~ income** 
+
+```{r}
+ggplot(data = credit_dis10, mapping = aes(x = debt, y = income)) + 
+  geom_point() +
+  labs(x = "Income (in $1000)", y = "Credit Card debt (in $)",
+       title = "Debt and Income") + 
+    geom_smooth(method = "lm", se = F)
+```
+
+
+**Correlation Coefficient**
+
+```{r}
+credit_dis10 %>% 
+  select(debt, credit_limit, income) %>% 
+  cor()
+```
+
+**Note** 
+
+debt ~ credit limit = 0.862
+
+**strong positive linear relationship**
+
+more credit limit =  more debt
+
+***
+
+debt ~ income = 0.464
+
+**weak positive linear relationship**
+
+***
+
+credit_limit ~ income = 0.792
+
+**collinearity**
+
+What to do when collinearity found?
+
+### Regression
+#### {.tabset}
+
+**Model Creation**
+
+Regression Model Fit = lm(y ~ x1 + x2, data)
+
+```{r}
+debt_model <- lm(debt ~ credit_limit + income, data = credit_dis10 )
+
+# get regression table 
+
+get_regression_table(debt_model)
+```
+
+**Note**
+
+***
+
+Intercept = $385.179$
+
+**Regression Plane**
+
+***
+
+credit_limit = $0.264$ (positive)
+
+**credit limit has associated increase credit card debt**
+
+correlation $~~not = ~~$ causation
+
+***
+
+income = $-7.66$
+
+**income has associated decrease of credit card debt**
+
+for every increase in each unit of income($1000)
+
+
+***
+
+**Matching Results**
+
+new explanatory variables
+
+$x_1$ = credit_rating
+
+$x_2$ = age
+
+```{r}
+lm(debt ~ credit_rating + age, data = credit_dis10)
+get_regression_table(lm(debt ~ credit_rating + age, data = credit_dis10))
+
+```
+
+

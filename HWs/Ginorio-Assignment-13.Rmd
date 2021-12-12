@@ -1,0 +1,103 @@
+---
+title: "Ginorio_Assignment_13"
+author: "MGinorio"
+date: "11/21/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Question 1
+
+Use integration by substitution to solve the integral below.
+
+$$\int_{}^{} 4e^{-7x}dx$$
+
+### Answer
+
+$$u = -7x$$
+$$\frac{du}{dx} = -7$$
+$$du = -7dx$$
+$$dx = \frac{du}{-7}$$
+$$\int_{}^{} 4e^{u}\frac{du}{-7}$$
+$$-\frac{4}{7}\int_{}^{}e^udu$$
+$$= -\frac{4}{7} \times e^u$$
+$$Substitute\ u = -7x$$
+$$= -\frac{4}{7}e^{-7x} + C$$
+
+### Question 2
+
+Biologists are treating a pond contaminated with bacteria. The level of contamination is changing at a rate of $\frac{dN}{dt} = -\frac{3150}{t^4} - 220$ bacteria per cubic centimeter per day, where $t$ is the number of days since treatment began. Find a function $N(t)$ to estimate the level of contamination if the level after 1 day was 6530 bacteria per cubic centimeter.
+
+### Answer
+$$\frac{dN}{dt} = -\frac{3150}{t^4} - 220$$
+$$\frac{dN}{dt} = -3150t^{-4} - 220$$
+
+$$dN = (-3150t^{-4} - 220)dt$$
+$$N = \int (-3150t^{-4} - 220)dt$$
+$$N = \int -3150t^{-4} - \int 220dt$$
+$$N(t) = \frac{1050}{t^3} - 220t + C$$
+
+Now, given that the level of contamination after 1 day was 6530 bacteria per cubic centimeter:
+
+$$N(1) = 6530$$
+
+$$N(1) = 6530 = \frac{1050}{1} - 220 + C$$
+$$C = 5700\ for\ N(1)$$
+Substitute $C$ back into $N(t)$
+
+$$N(t) = \frac{1050}{t^3} - 220t + 5700$$
+
+
+### Question 3
+
+Find the total area of the red rectangles in the figure, where the equation of the line is $f(x) = 2x - 9$.
+
+### Answer
+
+Based on the image, the leftmost rectangle starts at 4.5 and the rightmost rectangle ends at 8.5
+
+$$\int_{4.5}^{8.5} 2x - 9dx$$
+$$= (x^2 - 9x) \Big|_{4.5}^{8.5}$$
+$$= (8.5^2 - 9(8.5)) - (4.5^2 - 9(4.5))$$
+$$Area = 16$$
+
+
+# Question 4
+
+Find the area of the region bounded by the graphs of the given equations.
+
+$$y = x^2 - 2x - 2,\ y = x + 2$$
+
+### Answer
+
+Pending
+
+### Question 5
+
+
+
+### Question 6
+
+Use integration by parts to solve the integral below.
+
+$$\int \ln(9x) \cdot x^6dx$$
+
+### Answer
+
+Start with formula:
+
+$$\int f(x) g'(x) = f(x)g(x) - \int f'(x)g(x)$$
+By parts
+
+$$f(x) = \ln(9x)$$
+$$f'(x) = \frac{1}{x}dx$$
+$$g'(x) = x^6dx$$
+$$g(x) = \frac{x^7}{7}$$
+Now substitute into the formula
+$$\ln(9x) \frac{x^7}{7} - \int \frac{x^7}{7}\frac{1}{x}dx $$
+$$\ln(9x) \frac{x^7}{7} - \frac{x^7}{49} + C $$

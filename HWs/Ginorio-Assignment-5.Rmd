@@ -21,7 +21,10 @@ $$
 $$
 
 ```{r}
-two_insp <- choose(24, 2) * .05^2 * .95^22
+#two_insp <- choose(24, 2) * .05^2 * .95^22
+
+1 - pbinom(1,24,.05)
+
 ```
 
 Exactly two inspections `r two_insp` (or `r two_insp * 100`%).
@@ -64,3 +67,79 @@ Mean (or expected value) is `r mu`.
 Variance is `r sigma.sq`.
 
 Standard deviation is `r sigma`.
+
+# Problem 4
+
+(Hypergeometric). Your subordinate with 30 supervisors was recently accused of favoring nurses. 15 of the subordinate’s workers are nurses and 15 are other than nurses. As evidence of malfeasance, the accuser stated that there were 6 company-paid trips to Disney World for which everyone was eligible. The supervisor sent 5 nurses and 1 non-nurse. If your subordinate acted innocently, what was the probability he/she would have selected five nurses for the trips? How many nurses would we have expected your subordinate to send? How many non-nurses would we have expected your subordinate to send?
+
+30 supervisors
+15 nurses 
+15 other
+
+### Solution
+
+$$
+P(X=k) = \frac{{K \choose k} \times {N-K \choose n-k}}{{N \choose n}}
+$$
+
+Where: 
+
+- K is the number of successes in the population
+
+- k is the number of observed successes
+
+- N is the population size
+
+- n is the number of draws
+
+#### Probability of 5 nurses
+
+```{r}
+K <- 15
+k <- 5
+N <- 30
+n <- 6
+result <- choose(K, k) * choose(N-K, n-k) / choose(N,n)
+result
+```
+
+Probability of 5 nurses selected is: `r result` (or `r result * 100`%).
+
+#### Expected count of nurses
+
+```{r}
+# Specify x-values for dhyper function 
+x_dhyper <- seq(0, 6, by = 1) 
+# Apply dhyper function 
+y_dhyper <- dhyper(x_dhyper, m = 15, n = 15, k = 6) 
+y_dhyper
+```
+
+Using the $dhyper$ function, the most likely outcome is 3 nurses with a probability of 34.8659%. And given that 3 nurses is the most likely outcome, then 3 non-nurses is the expected result for non-nurses. Given the symmetry of the question, 30 individuals of that 15 nurses, and 15 non-nurses, the expected result is 3 of each.
+
+
+
+# Problem 6
+
+You are working in a hospital that is running off of a primary generator which fails about once in 1000 hours. What is the probability that the generator will fail more than twice in 1000 hours? What is the expected value?
+
+### Solution
+
+#### Failure more than twice
+
+```{r}
+more_than_two <- 1 - pbinom(2, size=1000, prob=0.001) 
+```
+
+Probability the generator will fail more than twice in 1000 hours: `r more_than_two` or (`r more_than_two * 100`%).
+
+#### Expected value
+
+```{r}
+n <- 1000
+prob <- .001
+# Compute mean
+mu <- n*prob
+```
+
+The mean, or expected value, for the given scenario is: `r mu`.

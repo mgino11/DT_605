@@ -1,0 +1,500 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Linear Regression-1},
+  pdfauthor={MGinorio},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Linear Regression-1}
+\author{MGinorio}
+\date{11/3/2021}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(moderndive)}
+\FunctionTok{library}\NormalTok{(skimr)}
+\FunctionTok{library}\NormalTok{(ISLR)}
+\FunctionTok{library}\NormalTok{(tinytex)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{dataset}{%
+\subsection{Dataset}\label{dataset}}
+
+\textbf{evals dataset}
+
+Researchers at the University of Texas in Austin, Texas (UT Austin)
+tried to answer the following research question: what factors explain
+differences in instructor teaching evaluation scores?
+
+To this end, they collected instructor and course information on 463
+courses. A full description of the study can be found at openintro.org.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{glimpse}\NormalTok{(evals)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Rows: 463
+## Columns: 14
+## $ ID           <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17~
+## $ prof_ID      <int> 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, ~
+## $ score        <dbl> 4.7, 4.1, 3.9, 4.8, 4.6, 4.3, 2.8, 4.1, 3.4, 4.5, 3.8, 4.~
+## $ age          <int> 36, 36, 36, 36, 59, 59, 59, 51, 51, 40, 40, 40, 40, 40, 4~
+## $ bty_avg      <dbl> 5.000, 5.000, 5.000, 5.000, 3.000, 3.000, 3.000, 3.333, 3~
+## $ gender       <fct> female, female, female, female, male, male, male, male, m~
+## $ ethnicity    <fct> minority, minority, minority, minority, not minority, not~
+## $ language     <fct> english, english, english, english, english, english, eng~
+## $ rank         <fct> tenure track, tenure track, tenure track, tenure track, t~
+## $ pic_outfit   <fct> not formal, not formal, not formal, not formal, not forma~
+## $ pic_color    <fct> color, color, color, color, color, color, color, color, c~
+## $ cls_did_eval <int> 24, 86, 76, 77, 17, 35, 39, 55, 111, 40, 24, 24, 17, 14, ~
+## $ cls_students <int> 43, 125, 125, 123, 20, 40, 44, 55, 195, 46, 27, 25, 20, 2~
+## $ cls_level    <fct> upper, upper, upper, upper, upper, upper, upper, upper, u~
+\end{verbatim}
+
+\hypertarget{question}{%
+\subsubsection{Question}\label{question}}
+
+Can we explain differences in teaching evaluation score based on various
+teacher attributes?
+
+\hypertarget{variables}{%
+\subsubsection{Variables}\label{variables}}
+
+\(y:\) Average teaching \(score\) based on students evaluations
+
+\(\vec{x}\) Attributes like gender, ethnicity, bty\_avg
+
+Investigate correlation between this variables
+
+\begin{itemize}
+\tightlist
+\item
+  ID
+\item
+  Score
+\item
+  Age
+\item
+  Gender
+\item
+  Rank
+\item
+  Cls\_students
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{evals\_disc12 }\OtherTok{\textless{}{-}}\NormalTok{ evals }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(ID, score, gender, age, rank, cls\_students, ethnicity)}
+
+\NormalTok{evals\_disc12}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 463 x 7
+##       ID score gender   age rank         cls_students ethnicity   
+##    <int> <dbl> <fct>  <int> <fct>               <int> <fct>       
+##  1     1   4.7 female    36 tenure track           43 minority    
+##  2     2   4.1 female    36 tenure track          125 minority    
+##  3     3   3.9 female    36 tenure track          125 minority    
+##  4     4   4.8 female    36 tenure track          123 minority    
+##  5     5   4.6 male      59 tenured                20 not minority
+##  6     6   4.3 male      59 tenured                40 not minority
+##  7     7   2.8 male      59 tenured                44 not minority
+##  8     8   4.1 male      51 tenured                55 not minority
+##  9     9   3.4 male      51 tenured               195 not minority
+## 10    10   4.5 female    40 tenured                46 not minority
+## # ... with 453 more rows
+\end{verbatim}
+
+\hypertarget{eda}{%
+\subsubsection{EDA}\label{eda}}
+
+Understanding Each Variable
+
+We will perform an exploratory analysis of the selected variables before
+any formal modeling
+
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/eda vars-1.pdf}
+
+\hypertarget{statistics}{%
+\subsubsection{Statistics}\label{statistics}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{evals\_disc12 }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(score, gender, age, rank, cls\_students, ethnicity) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{skim}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Data summary}\tabularnewline
+\toprule
+& \\
+\midrule
+\endfirsthead
+\toprule
+& \\
+\midrule
+\endhead
+Name & Piped data \\
+Number of rows & 463 \\
+Number of columns & 6 \\
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ & \\
+Column type frequency: & \\
+factor & 3 \\
+numeric & 3 \\
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ & \\
+Group variables & None \\
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: factor}
+
+\begin{longtable}[]{@{}lrrlrl@{}}
+\toprule
+skim\_variable & n\_missing & complete\_rate & ordered & n\_unique &
+top\_counts \\
+\midrule
+\endhead
+gender & 0 & 1 & FALSE & 2 & mal: 268, fem: 195 \\
+rank & 0 & 1 & FALSE & 3 & ten: 253, ten: 108, tea: 102 \\
+ethnicity & 0 & 1 & FALSE & 2 & not: 399, min: 64 \\
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: numeric}
+
+\begin{longtable}[]{@{}lrrrrrrrrrl@{}}
+\toprule
+skim\_variable & n\_missing & complete\_rate & mean & sd & p0 & p25 &
+p50 & p75 & p100 & hist \\
+\midrule
+\endhead
+score & 0 & 1 & 4.17 & 0.54 & 2.3 & 3.8 & 4.3 & 4.6 & 5 & ▁▁▅▇▇ \\
+age & 0 & 1 & 48.37 & 9.80 & 29.0 & 42.0 & 48.0 & 57.0 & 73 & ▅▆▇▆▁ \\
+cls\_students & 0 & 1 & 55.18 & 75.07 & 8.0 & 19.0 & 29.0 & 60.0 & 581 &
+▇▁▁▁▁ \\
+\bottomrule
+\end{longtable}
+
+\textbf{Visual Relationship}
+
+Following the scatterplots indicate the relationship of the independent
+variables witht the dependent variable (score)
+
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{itemize}
+\tightlist
+\item
+  Score =
+\item
+  Age =
+\item
+  Cls\_students =
+\end{itemize}
+
+CATEGORICAL VARS -
+
+When using a categorical predictor variable, the intercept corresponds
+to the mean for the baseline group, while coefficients for the
+non-baseline groups are offsets from this baseline. Thus in the
+visualization the baseline for comparison group's median is marked with
+a solid line, whereas all offset groups' medians are marked with dashed
+lines
+
+\begin{itemize}
+\tightlist
+\item
+  Gender =
+\item
+  Rank =
+\item
+  Ethnicity =
+\end{itemize}
+
+\hypertarget{dichotomous-var}{%
+\subsubsection{Dichotomous Var}\label{dichotomous-var}}
+
+We can see in the scatter plot above that the amount of students in the
+classrooms goes from 0-600. In which the vast majority is distributed
+between 0-200. Having that in mind I will create a Dichotomous variable
+for num\_students in a classroom less than 100 for ``Y'' and more than
+100 to ``N''
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{evals\_disc12}\SpecialCharTok{$}\NormalTok{num\_students }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(evals\_disc12}\SpecialCharTok{$}\NormalTok{cls\_students }\SpecialCharTok{\textless{}=} \DecValTok{100}\NormalTok{, }\StringTok{"Y"}\NormalTok{, }\StringTok{"N"}\NormalTok{)}
+\NormalTok{evals\_disc12}\SpecialCharTok{$}\NormalTok{num\_students\_n }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(evals\_disc12}\SpecialCharTok{$}\NormalTok{num\_students }\SpecialCharTok{==} \StringTok{"Y"}\NormalTok{, }\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{evals\_disc12 }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ num\_students, }\AttributeTok{y =}\NormalTok{ score)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"num\_students vs. score"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/unnamed-chunk-6-1.pdf}
+num\_students boxplot indicates a slight difference in score when
+teacher has more than 100 students
+
+\hypertarget{create-model}{%
+\subsubsection{Create Model}\label{create-model}}
+
+\textbf{Score Model}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = score ~ gender + age + rank + cls_students + ethnicity, 
+##     data = evals_disc12)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7769 -0.3589  0.0773  0.4233  1.0083 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)            4.649e+00  1.759e-01  26.429  < 2e-16 ***
+## gendermale             1.942e-01  5.328e-02   3.645 0.000298 ***
+## age                   -1.098e-02  3.111e-03  -3.531 0.000457 ***
+## ranktenure track      -2.165e-01  8.246e-02  -2.626 0.008941 ** 
+## ranktenured           -1.659e-01  6.395e-02  -2.594 0.009794 ** 
+## cls_students           8.954e-05  3.380e-04   0.265 0.791216    
+## ethnicitynot minority  9.342e-02  7.318e-02   1.277 0.202406    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.5299 on 456 degrees of freedom
+## Multiple R-squared:  0.06308,    Adjusted R-squared:  0.05076 
+## F-statistic: 5.117 on 6 and 456 DF,  p-value: 4.21e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(score\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/unnamed-chunk-7-2.pdf}
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/unnamed-chunk-7-3.pdf}
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/unnamed-chunk-7-4.pdf}
+
+\hypertarget{transform-variables}{%
+\subsubsection{Transform Variables}\label{transform-variables}}
+
+\textbf{Quadratic Term}
+
+I decided to create quadratic term for class students
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{evals\_disc12}\SpecialCharTok{$}\NormalTok{cls\_students\_sq2 }\OtherTok{\textless{}{-}}\NormalTok{ evals\_disc12}\SpecialCharTok{$}\NormalTok{cls\_students}\SpecialCharTok{\^{}}\DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Dichonomous by quatitative}
+
+to create a dichotomous by quatitative variable. I will multiply age by
+a Dichotomous variable `num\_students'
+
+num\_students was created earlier based on the scatterplot
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{evals\_disc12}\SpecialCharTok{$}\NormalTok{cls\_by\_age }\OtherTok{\textless{}{-}}\NormalTok{ evals\_disc12}\SpecialCharTok{$}\NormalTok{num\_students\_n }\SpecialCharTok{*}\NormalTok{ evals\_disc12}\SpecialCharTok{$}\NormalTok{age}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{second-model}{%
+\subsubsection{Second Model}\label{second-model}}
+
+\textbf{New Variables}
+
+\begin{itemize}
+\item
+  cls\_by\_age
+\item
+  num\_students\_n
+\item
+  num\_students
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{score\_model\_t }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(score }\SpecialCharTok{\textasciitilde{}}\NormalTok{ cls\_by\_age }\SpecialCharTok{+}\NormalTok{ num\_students }\SpecialCharTok{+}\NormalTok{ cls\_students\_sq2, }\AttributeTok{data =}\NormalTok{ evals\_disc12)}
+
+\FunctionTok{summary}\NormalTok{(score\_model\_t)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = score ~ cls_by_age + num_students + cls_students_sq2, 
+##     data = evals_disc12)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.9245 -0.3462  0.1093  0.4183  0.8889 
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)       4.022e+00  8.643e-02  46.530   <2e-16 ***
+## cls_by_age       -6.674e-03  2.777e-03  -2.403   0.0166 *  
+## num_studentsY     4.761e-01  1.612e-01   2.954   0.0033 ** 
+## cls_students_sq2  2.205e-06  8.547e-07   2.580   0.0102 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.5382 on 459 degrees of freedom
+## Multiple R-squared:  0.02692,    Adjusted R-squared:  0.02056 
+## F-statistic: 4.232 on 3 and 459 DF,  p-value: 0.005752
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(score\_model\_t)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/unnamed-chunk-11-1.pdf}
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/unnamed-chunk-11-2.pdf}
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/unnamed-chunk-11-3.pdf}
+\includegraphics{Ginorio-Assignment-12_files/figure-latex/unnamed-chunk-11-4.pdf}
+
+\hypertarget{conclusion}{%
+\subsection{Conclusion}\label{conclusion}}
+
+Overall, Adjusted R-squared: 0.009235 wich means the model only accounts
+for 0.9\% of the variability in the data.
+
+the selection of class size (cls\_students) given the influence of the
+outliers.
+
+this model does not meet the level of the baseline model.
+
+\end{document}

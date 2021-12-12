@@ -1,0 +1,111 @@
+---
+title: "Discussion_10"
+author: "MGinorio"
+date: "10/30/2021"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Example 11.6 pg. 410
+
+In the Dark Ages, Harvard, Dartmouth, and Yale admitted only
+male students. Assume that, at that time, 80 percent of the sons of Harvard men
+went to Harvard and the rest went to Yale, 40 percent of the sons of Yale men went
+to Yale, and the rest split evenly between Harvard and Dartmouth; and of the sons
+of Dartmouth men, 70 percent went to Dartmouth, 20 percent to Harvard, and
+10 percent to Yale. We form a Markov chain with transition matrix.
+
+$$
+P = 
+\begin{bmatrix}
+    0.8 & 0 & 0.2 \\
+    0.2 & 0.70 & 0.10 \\
+    0.3 & 0 & 0.40 \\
+    
+\end{bmatrix}
+$$
+
+## Step 1
+Create vector College_Admis containing the percentages of college admission for each graduate.
+
+```{r}
+College_Zone <- c("Harv", "Dartm", "Yale")
+College_Zone
+
+```
+
+
+## Step 2
+
+Create Matrix with values from probability.
+convert vector into matrix and add to column and row name 
+
+```{r}
+Zone_Transition = matrix(c(0.8,0,0.2,0.20,0.70,0.10,0.30,0.30,0.40), 
+                         nrow = 3,
+                         byrow = TRUE,
+                         dimnames = list(College_Zone, College_Zone))
+Zone_Transition
+
+```
+
+## Step 3 
+
+Install markovchain package
+ 
+```{r}
+library(markovchain)
+```
+
+## Step 4
+
+Create a markov Chain object 
+state space = to vector in Step 1 and 
+Transition matrix from step 2
+
+```{r}
+mcZone <- new("markovchain", states = College_Zone,
+               byrow = TRUE,
+               transitionMatrix = Zone_Transition,
+               name = "College_Movement")
+mcZone
+class(mcZone)
+```
+
+
+## Step 5
+For Example 11.6, find the probability that the grandson of a man from Harvard went to Harvard
+
+```{r}
+mcZone^2
+```
+
+### Answer
+
+The probability that the grandson of a man from Hardvard went to Harvard is **70%**
+
+
+## Step 7
+
+Determine the stationary state of 
+
+```{r}
+steadyStates(mcZone)
+```
+
+## Step 8
+
+Display the Markov chain and the transition probabilities.
+
+```{r}
+layout <- Zone_Transition
+plot(mcZone, node.size = 10, layout = layout)
+```
+
+Since we DO NOT have an absorbing Markov chain, we DO NOT calculate the expected time until absorption.

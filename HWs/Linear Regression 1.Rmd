@@ -1,0 +1,313 @@
+---
+title: "Linear Regression-1"
+author: "MGinorio"
+date: "11/3/2021"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(ISLR)
+library(tinytex)
+
+```
+
+## Dataset
+
+**evals dataset**
+
+Researchers at the University of Texas in Austin, Texas (UT Austin) tried  to answer the following research question: what factors explain differences in  instructor teaching evaluation scores? 
+
+To this end, they collected instructor  and course information on 463 courses. A full description of the study can be  found at openintro.org.  
+
+```{r}
+glimpse(evals)
+```
+
+### Question
+
+Can we explain differences in teaching evaluation score based on various teacher attributes?
+
+
+### Variables
+
+$y:$ Average teaching $score$ based on students evaluations
+
+$\vec{x}$ Attributes like gender, age, bty_avg
+
+
+Investigate correlation between this variables
+
+* ID
+* Score
+* beauty average
+* Age
+
+```{r}
+evals_disc11 <- evals %>% 
+  select(ID, score, bty_avg, age)
+
+evals_disc11
+
+```
+
+### EDA
+
+Always perform an exploratory analysis of your variables before any formal modeling
+
+
+```{r eda vars, echo=FALSE}
+
+#### age
+
+pl1 <- ggplot(evals_disc11, aes(x = age)) +
+  geom_histogram(binwidth = 5) +
+  labs(x = "age", y = "count") +
+  ggtitle("Age Distribution") +
+  theme(legend.position = "none")
+
+
+#### score
+
+pl2 <- ggplot(evals_disc11, aes(x = score)) +
+  geom_histogram(binwidth = 5) +
+  labs(x = "score", y = "count") +
+  ggtitle("Score Distribution") +
+  theme(legend.position = "none")
+
+
+#### beauty average
+
+
+pl3 <- ggplot(evals_disc11, aes(x = bty_avg)) +
+  geom_histogram(binwidth = 5) +
+  labs(x = "bty_avg", y = "count") +
+  ggtitle("bty_avg Distribution") +
+  theme(legend.position = "none")
+
+
+
+library(patchwork)
+
+pl1 + pl2 + pl3 + plot_layout(ncol = 2)
+
+```
+
+Random sample of 10 out of the 463 courses at UT Ausitn
+
+```{r}
+
+evals_disc11 %>% 
+  sample_n(size = 10)
+```
+### Statistics
+
+```{r}
+evals_disc11 %>% 
+  select(score, bty_avg, age) %>% skim()
+```
+
+### Correlation Coefficient
+
+* formula 
+* = score ~ bty_avg
+* = score ~ age
+
+```{r, echo=FALSE}
+evals_disc11 %>% 
+  get_correlation(formula = score ~ bty_avg) 
+
+#The correlation coefficient 0.187 indicates that the relationship between teaching evaluation score and beauty is weakly_positive
+
+# relationship = weak + positive
+
+evals_disc11 %>% 
+  get_correlation(formula = score ~ age)
+
+# weak negative
+```
+
+
+
+***
+
+**Visual Relationship**
+
+We can see their relationship is consistent with the coefficient sign and result
+
+```{r, echo=FALSE}
+pl4 <- ggplot(data = evals_disc11, aes(x = bty_avg, y = score)) + 
+  geom_point() +
+  labs(x = "Beauty Score", y = "Teaching Score",
+       title = "Relationship between score and beauty scores") + 
+    geom_smooth(method = "lm", se = F)
+
+pl5 <- ggplot(data = evals_disc11, aes(x = age, y = score)) + 
+  geom_point() +
+  labs(x = "age", y = "Teaching Score",
+       title = "Relationship between score and age") + 
+    geom_smooth(method = "lm", se = F)
+
+library(patchwork)
+
+pl4 + pl5 + plot_layout(ncol = 2)
+
+```
+Regression line is consistent with the earlier result of correlation coefficient 0.187
+
+**as instructors have higher beauty scores they receive higher teacher evaluations**
+
+### Residuals
+
+**Score Model**
+
+```{r score model, echo=FALSE}
+
+library(knitr)
+
+#score_model ~ bty_avg
+
+score_model <- lm(score ~ bty_avg, data = evals_disc11)
+
+#score_model2 ~ age
+
+score_model2 <- lm(score ~ age, data = evals_disc11)
+
+get_regression_table(score_model, conf.level = 0.99) %>% 
+  kable()
+
+```
+
+Organize all points in one data frame 
+how all values in the first row of output are computed.
+
+```{r, echo=FALSE}
+score_model_points <- get_regression_points(score_model) 
+
+score_model_points_age <- get_regression_points(score_model2)
+
+```
+
+### Conditions for Linear Regression
+
+**Visual Relationship**
+
+Distribution of Residuals 
+Investigate potential relationships between the residuals and all explanatory/predictor variables
+
+```{r residuals, echo=FALSE}
+# Code to visualize distribution of residuals:
+
+pl6 <- ggplot(score_model_points, aes(x = residual)) +
+  geom_histogram(bins = 20) +
+  labs(x = "Age Residual", y = "Count")
+
+# Code to visualize partial residual plot over age:
+
+pl7 <- ggplot(score_model_points, aes(x = bty_avg, y = residual)) +
+  geom_point() +
+  labs(x = "bty_avg", y = "Residual")
+
+pl8 <- ggplot(score_model_points_age, aes(x = residual)) +
+  geom_histogram(bins = 20) +
+  labs(x = "bty_avg Residual", y = "Count")
+
+# Code to visualize partial residual plot over age:
+
+pl9 <- ggplot(score_model_points_age, aes(x = age, y = residual)) +
+  geom_point() +
+  labs(x = "Age", y = "Residual")
+
+library(patchwork)
+
+pl6 + pl7 + pl8 + pl9 + plot_layout(ncol = 2)
+
+```
+
+```{r}
+plot(score_model)
+```
+```{r}
+plot(score_model_points)
+```
+
+
+
+### Fit Model
+
+$$\hat{y} = b_0 + b_1 * x$$
+
+$$\hat{score} = b_0 + b_1 * bty.avg$$
+
+$$\hat{score} = 3.880 + 0.067 * bty.avg$$
+
+
+
+The intercept / average teaching score = $b_0 = 3.88$
+
+Relationship between teaching and beauty = $b_1 = 0.067$
+
+**Note**
+
+* Sign is positive
+
+* positive relationship
+
+* **teachers with higher beauty tend to have higher teaching scores**
+
+* Correlation Coefficient 0.187 is positive 
+
+* slope $b_1 = 0.067$ interpretation
+  
+      *for every increase of 1 unit in bty_avg
+      there is an associated increase of,
+      on average, 0.0067 units of score*
+      
+
+
+**Note**
+
+* score = y
+
+* bty_avg = $x$
+
+* score_hat = $\hat{y}$
+
+* residual = $y-\hat{y}$
+
+
+
+
+
+## Conclusion
+
+***
+
+**sum of squared residuals**
+
+if we compute the residuals for all 463 courses' instructors and compute the sum of squared residuals we would obtain the "lack of a fit in a model"
+
+$$ y - \hat{y} = 0$$
+
+
+
+```{r}
+# compute the square of residuals
+
+score_model_points %>% 
+  mutate(squared_residuals = residual^2) %>% 
+  summarise(sum_of_squared_residuals = sum(squared_residuals))
+
+```
+
+**if the regression line fits all the points perfectly, then the sum of the squared residuals is 0. In this case as we can see this linear model was not the appropriate choice for this regression.**

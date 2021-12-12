@@ -1,0 +1,150 @@
+---
+title: "Ginorio_Final"
+author: "MGinorio"
+date: "12/11/2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1
+
+**Environment Setup**
+
+```{r environment set up, warning=FALSE, message=FALSE}
+library(matrixcalc)
+library(igraph)
+```
+
+
+**Form the A matrix**
+
+```{r matrix a }
+
+p1 <- c(0, 1/2, 1/2, 0, 0, 0)
+p2 <- rep(1/6, 6) #dangling node if leave 0 -  fix probability
+p3 <- c(1/3, 1/3, 0, 0, 1/3, 0)
+p4 <- c(0, 0, 0, 0, 1/2, 1/2)
+p5 <- c(0, 0, 0, 1/2, 0, 1/2)
+p6 <- c(0, 0, 0, 1, 0, 0)
+
+A <- matrix(c(p1, p2, p3, p4, p5, p6), 6)
+
+A
+
+```
+
+```{r p of cols}
+# check and adjust probability for each column (row)
+colSums(A)
+```
+
+**Introduce Decay**
+
+```{r}
+B <- 0.85 * A + 0.15/nrow(A)
+```
+
+
+
+**Uniform Rank Vector** 
+
+$r = B^{n} * r$
+
+```{r uniform rank}
+r <- rep(1/nrow(A), nrow(A))
+```
+
+### Power Iterations 
+
+```{r power iterations}
+
+cbind(matrix.power(B,10) %*% r,
+      matrix.power(B,20) %*% r,
+      matrix.power(B,30) %*% r,
+      matrix.power(B,40) %*% r,
+      matrix.power(B,50) %*% r,
+      matrix.power(B,60) %*% r)
+
+
+```
+
+####  Page Rank PR1 with Power Iterations
+
+```{r PR1 Power iterations }
+PR1 <- matrix.power(B, 40) %*% r   #convergence happens at 40
+
+```
+
+### Eigen Decomposition
+
+Compute the eigen-decomposition of B and verify that you indeed get an eigenvalue of 1 as the largest eigenvalue and that its corresponding eigenvector is the same vector that you obtained in the previous power iteration method. Further, this eigenvector has all positive entries and it sums to 1
+
+
+**Eigen Decomposition of B**
+
+```{r pr2 eigen decomp, warning=FALSE, message=FALSE}
+
+eigen_decom <- eigen(B)
+PR2 <- as.numeric(eigen_decom$vectors[,which.max(eigen_decom$values)]) 
+#get vectors associated with largest eigenvalue == 1
+#locate max values of each vector of numeric (as.numeric) transform
+
+```
+
+#### Page Rank PR2 with Eigen Decomposition
+```{r}
+PR2 <- (1/sum(PR2))*PR2 #normalize
+PR2
+```
+
+**Return Matrix A to Original Form**
+```{r return to matrix A0}
+# return to A_0 matrix without the normalized row
+p2_0 <- rep(0, 6) 
+A_0 <- matrix(c(p1, p2_0, p3, p4, p5, p6), 6)
+A_0
+```
+
+
+### Igraph Library
+
+Use the graph package in R and its page.rank method to compute the Page Rank of the graph as given in A. Note that you don't need to apply decay. The package starts with a connected graph and applies decay internally. Verify that you do get the same PageRank vector as the two approaches above.
+
+```{r igraph, warning=FALSE, message=FALSE}
+a <- graph.adjacency(t(A_0), weighted = TRUE, mode = 'directed')
+ceb <- cluster_edge_betweenness(a)
+plot(ceb,a)
+```
+
+
+#### Page Rank PR3 with Igraph library
+
+```{r PR3}
+PR3_info <- page.rank(a)
+PR3 <- page.rank(a)$vector
+PR3_info
+
+```
+
+
+### Results
+
+```{r results}
+results <- cbind(PR1, PR2, PR3)
+results <- rbind(results, colSums(results))
+
+colnames(results) <- c('PowerIteration', 'EigenDecomp', 'IgraphTool')
+row.names(results) <- c('p1', 'p2', 'p3','p4', 'p5','p6', 'colSum')
+
+knitr::kable(results)
+```
+
+
+## Problem 2
+
+## Problem 3

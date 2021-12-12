@@ -1,0 +1,72 @@
+---
+title: "HW 8"
+author: "MGinorio"
+date: "10/17/2021"
+output: pdf_document
+---
+
+Problem 11 page 303
+A company buys 100 lightbulbs, each of which has an exponential lifetime of 1000 hours. What is the expected time for the first of these bulbs to burn out? (See Exercise 10.)
+
+**Ex - 10**
+Let X1, X2, . . . , Xn be n independent random variables each of which has
+an exponential density with mean µ. Let M be the minimum value of the
+Xj . Show that the density for M is exponential with mean µ/n. Hint: Use
+cumulative distribution functions.
+
+
+## Answer
+As the hint suggests, using Exercise 10, the 100 lightbulbs are the $X_1, X_2, ..., X_n$
+meaning $n = 100$ independent random variables. Each has an exponential density with mean $\mu$. $M$ will be the minimum value of $X_j$. The density for $M$ is exponential with mean $\mu/n$.
+
+$n = 100$
+
+$\mu = 1000$
+
+As $E(M) = \mu/n$, then $1000/100$
+
+```{r}
+n <- 100
+mu <- 1000
+M <- mu / n
+```
+
+**Answer:** $E(M)=$ `r M` hours is the expected time for the first of these bulbs to burn out
+
+# Problem 14 page 303
+Assume that $X_1$ and $X_2$ are independent random variables, each having 
+an exponential density with parameter $\lambda$. Show that $Z = X_1 - X_2$ has density $f_Z(z) = (1/2)\lambda e^{-\lambda |z|}.$
+
+## Answer
+
+Sum of Two Independent Exponential Random Variables
+
+$Z = X_1 - X_2$ change for $Z = X - Y$
+
+$$
+f_{X}(x) = f_{Y}(x) = \begin{cases}
+  \lambda e^{-\lambda x}, & \text{if } x \geq 0, \\
+  0, & \text{otherwise}.
+\end{cases} 
+$$
+$$
+f_Z(z) =\int_{0}^{z} \lambda e^{-\lambda x} * e^{-\lambda x - z}dx
+$$
+
+Thus 
+
+
+$$
+\begin{split}
+f_Z(z) = f_Z(-z) \\
+= \frac{\lambda}{2} e^{-\lambda z},\ for\ z \leq 0 
+\end{split}
+$$
+Symmetric distribution
+
+$$
+f_Z(1) = f_Z(-1)
+$$
+
+
+

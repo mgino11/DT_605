@@ -1,0 +1,123 @@
+---
+title: 'Assignment #9'
+author: "MGinorio"
+date: "10/24/2021"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Problem 1
+
+The price of one share of stock in the Pilsdorff Beer Company (see Exercise 8.2.12) is given by $Y_n$ on the $n$th day of the year. Finn observes that the differences $X_n = Y_{n+1} - Y_n$ appear to be independent random variables with a common distribution having mean $\mu = 0$ and variance $\sigma^2 = 1/4$. If $Y_1 = 100$, estimate the probability that $Y_{365}$ is
+
+## A) $\geq$ 100
+
+$$
+P(Y_{365}-Y_1 \geq 0)
+$$
+```{r}
+# Data
+y_1 <- 100
+mu <- 0
+var <- 1/4
+sd <- sqrt(var)
+y_365 <- 100
+x_a <- (y_365 - y_1) / sqrt(365-1)
+
+a_result <- pnorm(x_a, mean = mu, sd = sd, lower.tail=F)
+a_result
+```
+
+
+## B) $\geq$ 110
+$$
+P(Y_{365}-Y_1 \geq 10)
+$$
+
+```{r warning=F,message=F}
+y_365 <- 110
+x_b <- (y_365 - y_1) / sqrt(365-1)
+b_result <- pnorm(x_b, mean = mu, sd = sd, lower.tail=F)
+b_result
+```
+
+## C) $\geq$ 120
+
+$$
+P(Y_{365}-Y_1 \geq 20)
+$$
+
+```{r warning=F,message=F}
+y_365 <- 120
+x_c <- (y_365 - y_1) / sqrt(365-1)
+c_result <- pnorm(x_c, mean = mu, sd = sd, lower.tail=F)
+c_result
+```
+
+## Problem 2
+
+Calculate the expected value and variance of the binomial distribution using the moment generating function.
+
+### Binomial Random Variable
+
+The mean and the variance of a random variable X with a binomial probability distribution can be difficult to calculate directly. Although it can be clear what needs to be done in using the definition of the expected value of X and X2, the actual execution of these steps is a tricky juggling of algebra and summations. An alternate way to determine the mean and variance of a binomial distribution is to use the moment generating function for X.
+
+Start with the random variable X and describe the probability distribution more specifically. 
+
+Perform n independent Bernoulli trials, each of which has probability of success p and probability of failure 1 - p. 
+
+Thus the probability mass function is
+$$
+f(x) = C(n,x) p^x(1-p)^{n-x}
+$$
+Here the term $C(n , x)$ denotes the number of combinations of n elements taken $x$ at a time, and x can take the values 0, 1, 2, 3, . . ., n.
+
+### MGF - Moment Generating FUnction
+
+Use this probability mass function to obtain the moment generating function of X:
+$$
+M(t) = E(e^{tX}) = \sum_{x \epsilon S}^{} e^{tx}f(x)
+$$
+Let X ~ Binom(n,p) then,
+
+$$
+M(t) = \sum_{x = 0} {n \choose x}(pe^t)^k (1-p)^{n-k}
+$$
+
+$$
+M(t) = [pe^t + (1-p)]^n
+$$
+
+$$
+M'x(t) = npe^t(pe^t +1 - p)^{n-1}
+$$
+where np = u
+and t = 0
+
+$$
+M'x(0) = u'_1 = np = E(X)
+$$
+Second derivative to obtain $E(X^2)$
+
+$$
+M''x(t) = n(n-1)(pe^t)^2(pe^t +1 - p)^{n-2} + npe^t(pe^t + 1 - p)^{n-1}
+$$
+$$
+M''x(0) = u'_2 = n(n-1)p^2 + np = E(X^2)
+$$
+
+### Variance
+
+$$
+Var(X) = u'_2 -(u'_1)^2 =  n(n-1)p^2 + np - n^2p^2
+$$
+Thus,
+$$
+Var(X) = np((n-1)p +1 - np) = np(1 - p)
+$$

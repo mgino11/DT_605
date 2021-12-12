@@ -1,0 +1,313 @@
+---
+title: "Linear Regression-1"
+author: "MGinorio"
+date: "11/3/2021"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(ISLR)
+library(tinytex)
+
+```
+
+## Dataset
+
+**evals dataset**
+
+Researchers at the University of Texas in Austin, Texas (UT Austin) tried  to answer the following research question: what factors explain differences in  instructor teaching evaluation scores? 
+
+To this end, they collected instructor  and course information on 463 courses. A full description of the study can be  found at openintro.org.  
+
+```{r}
+glimpse(evals)
+```
+
+### Question
+
+Can we explain differences in teaching evaluation score based on various teacher attributes?
+
+
+### Variables
+
+$y:$ Average teaching $score$ based on students evaluations
+
+$\vec{x}$ Attributes like gender, ethnicity, bty_avg
+
+
+Investigate correlation between this variables
+
+* ID
+* Score
+* Age
+* Gender
+* Rank
+* Cls_students
+
+```{r}
+evals_disc12 <- evals %>% 
+  select(ID, score, gender, age, rank, cls_students, ethnicity)
+
+evals_disc12
+
+```
+
+### EDA
+
+Understanding Each Variable
+
+We will perform an exploratory analysis of the selected variables before any 
+formal modeling
+
+```{r}
+library(ResourceSelection)
+
+kdepairs(evals_disc12==)
+```
+
+
+
+```{r eda vars, echo=FALSE}
+
+#### age
+
+pl1 <- ggplot(evals_disc12, aes(x = age)) +
+  geom_histogram(binwidth = 5) +
+  labs(x = "age", y = "count") +
+  ggtitle("Age Distribution") +
+  theme(legend.position = "none")
+
+
+#### score
+
+pl2 <- ggplot(evals_disc12, aes(x = score)) +
+  geom_histogram(binwidth = 5) +
+  labs(x = "score", y = "count") +
+  ggtitle("Score Distribution") +
+  theme(legend.position = "none")
+
+
+#### gender <fct>
+
+
+pl3 <- ggplot(evals_disc12, aes(x = gender)) +
+  geom_bar() +
+  labs(x = "gender", y = "count") +
+  ggtitle("Gender Distribution") +
+  theme(legend.position = "none")
+
+
+#### cls_students
+
+
+pl4 <- ggplot(evals_disc12, aes(x = cls_students)) +
+  geom_histogram(binwidth = 5) +
+  labs(x = "cls_students", y = "count") +
+  ggtitle("Students in Class Distribution") +
+  theme(legend.position = "none")
+
+
+### ethnicity <fct>
+
+pl5 <- ggplot(evals_disc12, aes(x = ethnicity)) +
+  geom_bar() +
+  labs(x = "ethnicity", y = "count") +
+  ggtitle("Ethnicity Distribution") +
+  theme(legend.position = "none")
+
+
+### rank <fct>
+
+pl6 <- ggplot(evals_disc12, aes(x = rank)) +
+  geom_bar() +
+  labs(x = "rank", y = "count") +
+  ggtitle("Rank Distribution") +
+  theme(legend.position = "none")
+
+
+library(patchwork)
+
+pl2 + pl1 + pl3 + pl4 + pl5 + pl6 +  plot_layout(ncol = 2)
+
+```
+
+### Statistics
+
+```{r}
+evals_disc12 %>% 
+  select(score, gender, age, rank, cls_students, ethnicity) %>% skim()
+```
+
+
+
+**Visual Relationship**
+
+Following the scatterplots indicate the relationship of the independent variables witht the dependent variable (score)
+
+```{r, echo=FALSE}
+
+### age
+
+pl7 <- ggplot(data = evals_disc12, aes(x = age, y = score)) + 
+  geom_point() +
+  labs(x = "Age", y = "Teaching Score",
+       title = "Score vs. Age ") + 
+    geom_smooth(method = "lm", formula = y~x)
+
+### gender <fct>
+
+pl8 <- ggplot(data = evals_disc12, aes(x = gender, y = score)) + 
+  geom_point() +
+  geom_categorical_model() + 
+  labs(x = "gender", y = "Teaching Score",
+       title = "score and gender")
+    
+
+### students in class
+
+pl9 <- ggplot(data = evals_disc12, aes(x = cls_students, y = score)) + 
+  geom_point() +
+  labs(x = "cls_students", y = "Teaching Score",
+       title = "score vs. class students") + 
+    geom_smooth(method = "lm", formula = y~x)
+
+### rank <fct>
+
+pl10 <- ggplot(data = evals_disc12, aes(x = rank, y = score)) + 
+  geom_point() +
+  geom_categorical_model() + 
+  labs(x = "rank", y = "Teaching Score",
+       title = "score vs. rank")
+
+
+### ethnicity <fct>
+
+pl11 <- ggplot(data = evals_disc12, aes(x = ethnicity, y = score)) + 
+  geom_point() +
+  geom_categorical_model() + 
+  labs(x = "ethnicity", y = "Teaching Score",
+       title = "score vs. ethnicity")
+
+
+library(patchwork)
+
+pl7 + pl8 + pl9 + pl10 + pl11 + plot_layout(ncol = 2)
+
+```
+
+* Score = 
+* Age = 
+* Cls_students = 
+
+CATEGORICAL VARS  - 
+
+When using a categorical predictor variable, the intercept corresponds to the mean for the baseline group, while coefficients for the non-baseline groups are offsets from this baseline. Thus in the visualization the baseline for comparison group's median is marked with a solid line, whereas all offset groups' medians are marked with dashed lines
+
+* Gender = 
+* Rank = 
+* Ethnicity = 
+
+### Dichotomous Var
+
+We can see in the scatter plot above that the amount of students in the classrooms goes from 0-600. In which the vast majority is distributed between 0-200. Having that in mind I will create a Dichotomous variable for num_students in a classroom less than 100 for "Y" and more than 100 to "N"
+
+```{r}
+evals_disc12$num_students <- ifelse(evals_disc12$cls_students <= 100, "Y", "N")
+evals_disc12$num_students_n <- ifelse(evals_disc12$num_students == "Y", 1,0)
+```
+
+```{r}
+evals_disc12 %>% 
+  ggplot(aes(x = num_students, y = score)) +
+  geom_boxplot() + 
+  labs(title = "num_students vs. score")
+```
+num_students boxplot indicates a slight difference in score when teacher has more than 100 students 
+
+
+
+
+### Create Model
+
+**Score Model**
+
+```{r score model, echo=FALSE}
+
+#score_model ~ bty_avg
+
+score_model <- lm(score ~ gender + age + rank + cls_students + ethnicity, data = evals_disc12)
+
+summary(score_model)
+ 
+
+```
+
+```{r}
+plot(score_model)
+```
+
+
+### Transform Variables
+
+**Quadratic Term**
+
+I decided to create quadratic term for class students
+
+```{r}
+evals_disc12$cls_students_sq2 <- evals_disc12$cls_students^2
+```
+
+
+**Dichonomous by quatitative**
+
+to create a dichotomous by quatitative variable. I will multiply age by a Dichotomous variable 'num_students'
+
+num_students was created earlier based on the scatterplot
+
+```{r}
+evals_disc12$cls_by_age <- evals_disc12$num_students_n * evals_disc12$age
+
+```
+
+
+### Second Model
+
+
+**New Variables**
+
+* cls_by_age
+
+* num_students_n
+
+* num_students
+
+
+```{r}
+score_model_t <- lm(score ~ cls_by_age + num_students + cls_students_sq2, data = evals_disc12)
+
+summary(score_model_t)
+```
+
+```{r}
+plot(score_model_t)
+```
+
+
+## Conclusion
+
+Overall, Adjusted R-squared:  0.009235 wich means the model only accounts for 0.9% of the variability in the data.
+
+the selection of class size (cls_students) given the influence of the outliers.
+
+this model does not meet the level of the baseline model.

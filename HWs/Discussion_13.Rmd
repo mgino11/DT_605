@@ -1,0 +1,112 @@
+---
+title: "Discussion_13"
+author: "MGinorio"
+date: "11/20/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### To Do
+
+Using R, provide the solution for any exercise in either Chapter 4 or Chapter 7 of the calculus textbook.  If you are unsure of your solution, post your concerns.
+
+### Section 4.2: Exercise 9
+
+A 24 ft. ladder is leaning against a house while the base is pulled away at a constant rate of 1 ft/s.
+
+At what rate is the top of the ladder sliding down the side of the house when the base is:
+
+* A: 1 foot from the house?
+* B: 10 feet from the house?
+* C: 23 feet from the house?
+* D: 24 feet from the house?
+
+### Goal
+
+To find the rate of change of two or more variables that are changing with respect to time.
+
+### How?
+
+take the Derivative Implicitly and every variable gets multiplied by $\frac{d}{dt}$ (derivative with respect to time)
+
+### Link Equation to Data 
+
+Pythagorean theorem
+
+$x^2 + y^2 = 24^2$
+
+### Derivative
+
+Pulled Away =  Positive 
+$\frac{d}{dt}$ = 1 ft/s
+
+
+### Derivative with respect to time
+
+$\frac{d}{dt}(x^2) + \frac{d}{dt}(y^2) = \frac{d}{dt}(24^2)$
+
+$2x \frac{dx}{dt} + 2y \frac{dy}{dt} = 0$
+
+$x \frac{dx}{dt} + y \frac{dy}{dt} = 0$
+
+$\frac{dy}{dt} = -\frac{x}{y} \frac{dx}{dt}$
+
+### Solve Pythagorean theorem 
+
+getting the value of a
+
+```{r}
+a = sqrt(24^2 - 1^2)
+a
+```
+
+```{r}
+db_dt <- 1
+```
+
+### Finding the Derivative of rate of change 
+
+#### A: 1 foot from the house?
+
+```{r}
+da_dt <- -1/a
+da_dt
+
+```
+
+Result: `r da_dt` ft/s
+
+#### B: 10 feet from the house?
+
+```{r}
+b <- 10
+a_2 <- sqrt(24^2 - b^2)
+
+
+da_dt_2 <- (-b * db_dt) / a_2
+```
+
+Result: `r da_dt_2` ft/s
+
+#### C: 23 feet from the house?
+
+```{r}
+c <- 23
+a_3 <- sqrt(24^2 - c^2)
+da_dt_3 <- (-c * db_dt) / a_3
+```
+
+Result: `r da_dt_3` ft/s
+
+#### D: 24 feet from the house?
+
+```{r}
+d <- 24
+a_4 <- sqrt(24^2 - d^2)
+da_dt_4 <- (-c * db_dt) / a_4
+```
+
+Result: `r da_dt_4` ft/s

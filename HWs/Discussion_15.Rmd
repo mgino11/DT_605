@@ -1,0 +1,25 @@
+---
+title: "Discussion 15"
+author: "MGinorio"
+date: "12/9/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+f_ <- expression(x**3 - 3*x + y**2 - 6*y) 
+x <- -1
+y <- 3
+f_x <- D(f_, "x")
+f_x
+f_y <- D(f_, "y")
+f_y
+eval(f_x)
+eval(f_y)
+```
+
+![](Images/Discussion_15.jpg)
+

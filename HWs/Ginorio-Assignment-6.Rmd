@@ -1,0 +1,205 @@
+---
+title: "Assignment 6"
+author: "MGinorio"
+date: "10/3/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1
+
+A bag contains 5 green and 7 red jellybeans. How many ways can 5 jellybeans be withdrawn from the bag so that the number of green ones withdrawn will be less than 2?
+
+The 3 possibilities:
+3 red, 2 green;
+4 red, 1 green;
+5 red, 0 green.
+
+The first case: 7C3 * 5C2 = 35 * 10 = 350
+The second case:7C4 * 5C1 = 35 * 5 = 175
+The third case: 7C5 * 5C0 = 21 * 1 = 21
+
+
+```{r p1}
+first_case <- factorial(7)/(factorial(4) * factorial(3)) *     factorial(5)/(factorial(3) * factorial(2))
+
+second_case <- factorial(7)/(factorial(3) * factorial(4)) *     factorial(5)/(factorial(4) * factorial(1))
+
+
+third_case <- factorial(7)/(factorial(2) * factorial(5)) *     factorial(5)/(factorial(5) * factorial(0))
+```
+
+```{r}
+total_ways <- first_case + second_case + third_case
+
+```
+
+# Problem 2
+A certain congressional committee consists of 14 senators and 13 representatives. How many ways can a subcommittee of 5 be formed if at least 4 of the members must be senators?
+
+The 4 possibilities:
+4 senator, 3 rep; 14C4 * 13P3
+5 senator, 2 rep; 14C5 * 13P2
+6 senator, 1 rep. 14C6 * 13P1
+7 senator, 0 rep. 14C7 * 13P0
+
+```{r}
+first_comitee <- (factorial(14)/(factorial(10) * factorial(4))) *     (factorial(13)/(factorial(10) * factorial(3)))
+
+second_comitee <- factorial(14)/(factorial(9) * factorial(5)) *     factorial(13)/(factorial(11) * factorial(2))
+
+third_comitee <- factorial(14)/(factorial(8) * factorial(6)) *     factorial(13)/(factorial(12) * factorial(1))
+
+fourth_comitee <- factorial(14)/(factorial(7) * factorial(7)) *     factorial(13)/(factorial(13) * factorial(0))
+
+```
+
+```{r}
+tota_comitee <- first_comitee + second_comitee + third_comitee + fourth_comitee
+```
+
+# Problem 3
+If a coin is tossed 5 times, and then a standard six-sided die is rolled 2 times, and finally a group of three cards are drawn from a standard deck of 52 cards without replacement, how many different outcomes are possible?
+
+### Answer:
+
+Assuming order of cards doesn't matter based on prompt:
+
+$5^5 * 6^2 * {52 \choose 3} = 2486250000$
+
+```{r}
+outcome_3 <- 5^5 * 6^2 * choose(52, 3)
+outcome_3
+```
+
+# Problem 4
+3 cards are drawn from a standard deck without replacement. What is the probability that at least one of the cards drawn is a 3? Express your answer as a fraction or a decimal number rounded to four decimal places.
+
+### Answer:
+
+Probability of 3s:
+$4/52 * 3/51 * 2/50 = 3.693785e-06$
+
+Probability of at least one three:
+$1 - 0.4135294 = 0.5864706\ \dots\ 0.5865$
+
+```{r}
+P_3s <- 4/52 * 3/51 * 2/50 * 1/49
+P_3s
+
+p_one_three <- 1 - P_3s
+p_one_three
+```
+
+
+# Problem 5
+
+Lorenzo is picking out some movies to rent, and he is primarily interested in documentaries and mysteries. He has narrowed down his selections to 17 documentaries and 14 mysteries.
+
+## Step 1
+How many different combinations of 5 movies can he rent?
+
+### Answer:
+
+${31 \choose 5} = 169911$
+```{r}
+outcome_5.1 <- choose(31, 5)
+outcome_5.1
+
+```
+
+# Step 2
+How many different combinations of 5 movies can he rent if he wants at least one mystery?
+
+### Answer:
+163723
+
+```{r}
+first_movie <- factorial(14)/(factorial(13) * factorial(1)) *     factorial(17)/(factorial(13) * factorial(4))
+
+second_movie <- factorial(14)/(factorial(12) * factorial(2)) *     factorial(17)/(factorial(14) * factorial(3))
+
+
+third_movie <- factorial(14)/(factorial(11) * factorial(3)) *     factorial(17)/(factorial(15) * factorial(2))
+
+fourth_movie <- factorial(14)/(factorial(10) * factorial(4)) *     factorial(17)/(factorial(16) * factorial(1))
+
+fifth_movie <- factorial(14)/(factorial(9) * factorial(5)) *     factorial(17)/(factorial(17) * factorial(0))
+
+```
+
+```{r}
+total_movies <- first_movie + second_movie + third_movie + fourth_movie + fifth_movie
+
+total_movies
+```
+
+
+# Problem 6
+DJ Jacqueline is making a playlist for an internet radio show; she is trying to decide what 6 songs to play and in what order they should be played. If she has her choices narrowed down to 7 hip-hop, 14 pop, and 22 blues songs, and she wants to play an equal number of hip-hop, pop, and blues songs, how many different playlists are possible? Express your answer in scientific notation rounding to the hundredths place.
+
+## Answer:
+${{}^{7}\!P_{2}} * {{}^{14}\!P_{2}} * {{}^{22}\!P_{2}} = 3.53 \times 10^6$
+
+```{r}
+perm = function(n, x) {
+  factorial(n) / factorial(n-x)
+}
+outcome_6 <- perm(7,2) * perm(14,2) * perm(22,2)
+outcome_6
+```
+
+# Problem 7
+An English teacher needs to pick 13 books to put on his reading list for the next school year, and he needs to plan the order in which they should be read. He has narrowed down his choices to 6 novels, 6 plays, 7 poetry books, and 5 nonfiction books
+
+
+# Problem 8
+
+Zane is planting trees along his driveway, and he has 5 sycamores and 5 cypress trees to plant in one row. What is the probability that he randomly plants the trees so that all 5 sycamores are next to each other and all 5 cypress trees are next to each other? 
+
+Express your answer as a fraction or a decimal number rounded to four decimal places
+
+### Answer:
+
+Permutations of 6 entities
+
+${{}^{6}\!P_{6}} = 720$
+
+Only 2 outcomes match the criteria: BBBEEE or EEEBBB
+
+$\frac{2}{720} = \frac{1}{360} = 0.0028$
+
+# Problem 9
+If you draw a queen or lower from a standard deck of cards, I will pay you $4. If not, you
+pay me $16. (Aces are considered the highest card in the deck.)
+
+### Step 1
+Find the expected value of the proposition. Round your answer to two decimal places. Losses must be expressed as negative values.
+
+### Answer:
+P(W) is probability of win
+
+A(W) is value of win
+
+$E(X) = P(W) * A(W) + P(W') * A(W') = \frac{11}{13} * 4 + \frac{2}{13} * -16 = 0.9230769$
+
+Answer: $0.9230769
+
+```{r}
+(-16 * (2/13)) + (4 * (11/13))
+```
+## Step 2
+If you played this game 833 times how much would you expect to win or lose? Round your answer to two decimal places. Losses must be expressed as negative values.
+
+### Answer:
+Calculation on rounded expected value from Step 1
+
+$E(X) \times Events = 0.9230769 * 833 = 768.9231$
+
+Answer: $768.9231 (winnings)
+```{r}
+0.9230769 * 833
+```

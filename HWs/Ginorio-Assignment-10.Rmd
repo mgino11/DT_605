@@ -1,0 +1,114 @@
+---
+title: "Ginorio_Assignment10"
+author: "MGinorio"
+date: "10/31/2021"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem
+
+Smith is in jail and has 1 dollar; he can get out on bail if he has 8 dollars.
+A guard agrees to make a series of bets with him. If Smith bets A dollars,
+he wins A dollars with probability .4 and loses A dollars with probability .6.
+Find the probability that he wins 8 dollars before losing all of his money if
+
+(a) he bets 1 dollar each time (timid strategy).
+(b) he bets, each time, as much as possible but not more than necessary to
+bring his fortune up to 8 dollars (bold strategy).
+(c) Which strategy gives Smith the better chance of getting out of jail
+
+$q_z = \frac{(q/p)^z-1}{(q/p)^M-1}$
+
+Starting with 1 dollar = $z=1$.
+$q_z$
+$p$  = the probability of a win, and 
+$q$ = the probability of a loss.
+$M$ = reaches the value M or the value 0
+
+
+### (a) 
+
+Find the probability that he reaches M = 8 dollars before losing M = 0
+
+He bets 1 dollar each time 
+(timid strategy)
+
+```{r timid}
+
+p <- .4
+q <- 1 - p
+z <- 1
+M <- 8
+
+result_timid <- ((q/p)^z - 1) / ((q/p)^M - 1)
+
+result_timid
+
+```
+
+The probability of winning 8 dollars is 0.02030135
+
+### (b) 
+he bets, each time, as much as possible 
+but not more than necessary
+to bring his fortune up to 8 dollars 
+(bold strategy).
+
+In order for Smith to bring his fortune to 8 dollars he needs to double down 3 times
+
+$$
+1^2 = 2
+$$
+
+$$2^2 = 4$$
+$$2^3 = 8$$
+
+```{r bold}
+result_bold <- p^3
+
+result_bold
+```
+The probability of winning 8 dollars is 0.064
+
+```{r}
+# random walk
+# origin
+x = 1
+y = 0
+no_of_points <- 1000
+
+for (i in 1:no_of_points){
+  # create random number between 1 to 4
+  s = sample(1:4,1)
+  if(s==1){ # right x+1
+    x = c(x,x[length(x) +1])
+    y = c(y,y[length(y)] -1)
+  }
+  
+  if(s==2){ # right x+1
+    x = c(x,x[length(x) +2])
+    y = c(y,y[length(y)] +2)
+  }
+  
+  if(s==3){ # right x+2
+    x = c(x,x[length(x) +4])
+    y = c(y,y[length(y)] +4)
+  }
+  
+}
+
+plot(x,y,col="black", type = "l")
+```
+
+
+### (c)
+
+Which strategy gives Smith the better chance of getting out of jail?
+
+Based on Smith arrangement the **bold strategy** is the best strategy it gives Smith 6% chance meanwhile the timid strategy gives Smith 2% chance.

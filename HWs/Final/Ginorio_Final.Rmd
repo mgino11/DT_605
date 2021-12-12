@@ -148,3 +148,11 @@ knitr::kable(results)
 ## Problem 2
 
 ## Problem 3
+
+**Environment Setup**
+
+```{r Problem 3 env, message=FALSE,warning=False}
+library(ggplot2)
+library(tidyverse)
+```
+
